@@ -1,0 +1,25 @@
+services:
+  qground:
+    image: ${IMAGE_NAME}:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: QGroundControl
+
+    environment:
+      # Required for GUI
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      
+    privileged: true
+
+    command: "/bin/bash"
+
+    volumes:
+      # Required for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+      - ${PWD}/entrypoint.sh:/entrypoint.sh
+
+    
