@@ -1,41 +1,21 @@
-FROM ubuntu:22.04
+ARG IMAGE_NAME="utnpiddrones/qground"
+ARG TAG_BUILD="build"
 
-RUN apt-get update && apt-get remove modemmanager -y && apt-get install -y \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-libav \
-    gstreamer1.0-gl \
+FROM ${IMAGE_NAME}:${TAG_BUILD}
+
+USER root
+
+RUN apt update && apt -y --quiet --no-install-recommends install \
     libqt5gui5 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY QGC.AppImage /home/QGC.AppImage
-
-RUN chmod +x /home/QGC.AppImage
-
-COPY entrypoint.sh /entrypoint.sh
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    espeak \
-    fuse \
-    libespeak-dev \
-    libfuse2 \
-    libgstreamer-plugins-base1.0-dev \
-    libgstreamer1.0-0 \
-    libgstreamer1.0-dev \
-    libsdl2-dev \
-    libssl-dev \
-    libudev-dev \
-    locales \
-    speech-dispatcher \
-&& rm -rf /var/lib/apt/lists/*
-
-RUN useradd -ms /bin/bash user
+	&& apt-get -y autoremove \
+	&& apt-get clean autoclean \
+	&& rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 USER user
 
-WORKDIR /home
+COPY qgroundcontrol/build/staging /home/user/qground
 
-ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "/home/QGC.AppImage" ]
+CMD [ "/home/user/qground/QGroundControl" ]
 
 
 

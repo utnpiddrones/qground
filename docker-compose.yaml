@@ -1,25 +1,35 @@
 services:
   qground:
-    image: ${IMAGE_NAME}:${TAG}
+    image: ${IMAGE_NAME}:${TAG_DEPLOY}
     build:
       context: .
-      dockerfile: Dockerfile
-
-    container_name: QGroundControl
+      dockerfile: ./Dockerfile
+      args:
+        - IMAGE_NAME=${IMAGE_NAME}
+        - TAG_BUILD=${TAG_BUILD}
 
     environment:
-      # Required for GUI
       - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1
-      
+      - QT_X11_NO_MITSHM=1    
+
     privileged: true
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+
+  qgroundbuild:
+    image: ${IMAGE_NAME}:${TAG_BUILD}
+    build:
+      context: ./qgroundcontrol
+      dockerfile: ./deploy/docker/Dockerfile-build-linux
+
+    container_name: ${CONTAINER_NAME}
 
     command: "/bin/bash"
 
     volumes:
-      # Required for GUI
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-
-      - ${PWD}/entrypoint.sh:/entrypoint.sh
+      - ${PWD}/qgroundcontrol:/project/source
+      - ${PWD}/qgroundcontrol/build:/project/build
 
     
