@@ -16,6 +16,7 @@ services:
 
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${PWD}/qgroundcontrol/build/staging /home/user/qground
 
 
   qgroundbuild:
