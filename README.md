@@ -47,18 +47,30 @@ cd qgroundcontrol && git checkout vX.X.X
 cd .. && git submodule update --recursive
 ```
 
-2. Crear la carpeta para buildear y ejecutar el docker correspondiente:
+2. Revisar el archivo `.env` y determinar el "tag" con el que se quiere trabajar, o al que se quiere actualizar la versión.
+
+3. Crear la carpeta para buildear y ejecutar el docker correspondiente:
 
 ```
 $ mkdir qgroundcontrol/build
 $ docker compose run --rm qgroundbuild
 ```
 
-3. Ahora, dentro de la carpeta `qgroundcontrol/build` tendrá la totalidad de los archivos de compilación.
+4. Ahora, dentro de la carpeta `qgroundcontrol/build` tendrá la totalidad de los archivos de compilación.
+Por defecto, no puede ejecutarse la GUI desde el docker que los compiló. Por lo tanto, es necesario ejecutar un nuevo Docker copiando el
+ejecutable y sus dependencias que fueron compiladas.
 
-## Datos del último build
+```
+$ docker compose run --rm qground
+```
 
-Versión de QGroundControl (commit hash): 05aaf33cf5647d56fa9210311022bc486fe9af9b (Revisado el 25/05/2022)
+5. Una vez obtenida la imagen final, reconstruirla y subirla a Docker Hub:
+```
+$ docker compose build qground
+$ docker compose push qground
+```
 
 ## TODO
 1. Implementar carga automática de misiones y parámetros.
+
+2. Especificar los puertos que deben exponerse.
