@@ -1,21 +1,25 @@
 # QGroundControl
 Repositorio con el docker e implementación de [QGroundControl](https://github.com/mavlink/qgroundcontrol).
 
-Para utilizar QGC, vea la seccion [Ejecución](#ejecución).
+Para utilizar QGC, vea la seccion [Uso](#Uso).
 
 Para construir una nueva version de QGC, vea la sección [Instalación y buildeo](#instalación-y-buildeo).
 
 Todas las imágenes de docker están subidas en Docker Hub bajo el repositorio [utnpiddrones/qground](https://hub.docker.com/repository/docker/utnpiddrones/qground).
 
 
-## Ejecución
-Si solamente quiere correr QGC, puede ejecutar la siguiente línea
-```
+## Uso
+Para usar QGC, ejecutar:
+```bash
 docker run --rm utnpiddrones/qground:latest
 ```
 
-Si quiere correr QGC en su proyecto, debe incluir el siguiente servicio mínimo en su archivo `docker-compose.yaml`:
-```
+Para intercomunicar QGC con otros Dockers, debe incluir el siguiente servicio mínimo en su archivo `docker-compose.yaml`, completando con el nombre de su red:
+
+```yaml
+networks:
+  <NETWORK_NAME>:
+
 services:
   qground:
     image: utnpiddrones/qground:latest
@@ -26,8 +30,13 @@ services:
       
     privileged: true
 
+    container_name: <CONTAINER_NAME>
+
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+    networks:
+      <NETWORK_NAME>:
 ```
 
 
@@ -37,8 +46,8 @@ En esta sección se explican los pasos necesarios para construir desde el códig
 
 1. Clonar este repositorio con todos sus submódulos:
 
-```
-$ git clone --recursive -j8 https://github.com/utnpiddrones/qground.git
+```bash
+git clone --recursive -j8 https://github.com/utnpiddrones/qground.git
 ```
 
 En caso de querer actualizar la versión de QGC, hacer un checkout de la versión estable que quiera y luego actualizar los submódulos con:
@@ -69,8 +78,3 @@ $ docker compose run --rm qground
 $ docker compose build qground
 $ docker compose push qground
 ```
-
-## TODO
-1. Implementar carga automática de misiones y parámetros.
-
-2. Especificar los puertos que deben exponerse.
